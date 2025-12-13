@@ -150,57 +150,7 @@ int validateEmail(AddressBook *addressBook, char email[])
     return 1;
 }
 
-void search_by_name(AddressBook *addressBook)
-{
-    char name_str[50];
-    Contact sameNames[20];       // Instace of contact to store same names found while searching
-    int similarNameContacts = 0; // To track multiple contacts with same names
-    printf("Enter name to search:\n");
-    scanf(" %[^\n]", name_str);
-
-    for (int i = 0; i < addressBook->contactCount; i++)
-    {
-        // Comparing addressbook database with user entered name (case insensitive)
-        if (strcasecmp(addressBook->contacts[i].name, name_str) == 0)
-        {
-            printf("Your required contact(s) is/are :\n");
-            sameNames[similarNameContacts] = addressBook->contacts[i];
-            // We are keeping count of multiple names if any
-            similarNameContacts++;
-
-            // Printing matching name contacts(s)
-            printf("%d. %s %s %s\n", similarNameContacts, addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
-        }
-    }
-
-    // If no matching name is found
-    if (similarNameContacts == 0)
-    {
-        printf("No contact found with entererd name\n");
-    }
-
-    // If multiple matching names are found
-    if (similarNameContacts > 1)
-    {
-        int contactChoice;
-        do
-        {
-            printf("Enter serial number to select a particular contact :\n");
-            scanf("%d", &contactChoice);
-
-            for (int i = 0; i < similarNameContacts; i++)
-            {
-                if (contactChoice - 1 == i)
-                {
-                    printf("Your choosen contact is :\n");
-                    printf("%d. %s %s %s\n", contactChoice, sameNames[i].name, sameNames[i].phone, sameNames[i].email);
-                }
-            }
-        } while (contactChoice > similarNameContacts);
-    }
-}
-
-void search_by_phone(AddressBook *addressBook)
+int search_by_phone(AddressBook *addressBook)
 {
     char phone_str[15];
     printf("Enter phone number :\n");
@@ -212,13 +162,13 @@ void search_by_phone(AddressBook *addressBook)
         {
             printf("Your required contact is :\n");
             printf("%d. %s %s %s\n", 1, addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
-            return;
+            return i;
         }
     }
     printf("No contact is found with given phone number \n");
 }
 
-void search_by_email(AddressBook *addressBook)
+int search_by_email(AddressBook *addressBook)
 {
     char email_str[50];
     printf("Enter email id:\n");
@@ -230,10 +180,73 @@ void search_by_email(AddressBook *addressBook)
         {
             printf("Your required contact is :\n");
             printf("%d. %s %s %s\n", 1, addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
-            return;
+            return i;
         }
     }
     printf("No contact is found with given email id \n");
+}
+
+int search_by_name(AddressBook *addressBook)
+{
+    char name_str[50];
+    printf("Enter name :\n");
+    scanf(" %[^\n]", name_str);
+
+    int i;
+    int sameNameContact = 0; // variable to check if there are multiple contacts with same name
+
+    for (i = 0; i < addressBook->contactCount; i++)
+    {
+        if (strcasecmp(addressBook->contacts[i].name, name_str) == 0)
+        {
+            sameNameContact++; // Counting  the same name contacts to handle the edge cases properly
+            if (sameNameContact == 1)
+            {
+                printf("Your required contact(s) is/are :\n");
+            }
+            printf("%s %s %s\n", addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
+        }
+    }
+
+    if (sameNameContact == 1)
+    {
+        for (i = 0; i < addressBook->contactCount; i++)
+        {
+            if (strcasecmp(addressBook->contacts[i].name, name_str) == 0)
+            {
+                return i;
+            }
+        }
+    }
+
+    else if (sameNameContact == 0)
+    {
+        printf("Contact not found ❌\n");
+    }
+
+    else
+    {
+        int choice;
+
+        printf("Since there are multiple contacts with same name :\n");
+        printf("So, Search By :\n 1.Phone number \n 2.Email\n");
+        printf("Enter your choice :\n");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            search_by_phone(addressBook);
+            break;
+
+        case 2:
+            search_by_email(addressBook);
+            break;
+
+        default:
+            printf("Invalid Option\n");
+        }
+    }
 }
 
 /*void editName(AddressBook *addressBook)
@@ -521,31 +534,34 @@ void editContact(AddressBook *addressBook)
 {
     /*int choice;
 
-     searchContact(AddressBook * addressBook);
+    searchContact(AddressBook * addressBook);
 
-     printf("What field you want to edit :\n");
-     printf("1.Edit Name \n");
-     printf("2.Edit Phone \n");
-     printf("3.Edit Email \n");
-     printf("4.Go to main menu\n");
+    do
+    {
+        printf("What field you want to edit :\n");
+        printf("1.Edit Name \n");
+        printf("2.Edit Phone \n");
+        printf("3.Edit Email \n");
+        printf("4.Go to main menu\n");
 
-     printf("Enter your choice :\n");
-     scanf(" %d", &choice);
+        printf("Enter your choice :\n");
+        scanf(" %d", &choice);
 
-     switch (choice)
-     {
-     case 1:
-         editName(AddressBook * addressBook);
-         break;
-     case 2:
-         editPhone(AddressBook * addressBook);
-         break;
-     case 3:
-         editEmail(AddressBook * addressBook);
-         break;
-     case 4:
-         break;
-     }*/
+        switch (choice)
+        {
+        case 1:
+            editName(AddressBook * addressBook);
+            break;
+        case 2:
+            editPhone(AddressBook * addressBook);
+            break;
+        case 3:
+            editEmail(AddressBook * addressBook);
+            break;
+        case 4:
+            break;
+        }
+    } while (choice != 4);*/
 }
 
 void deleteContact(AddressBook *addressBook)

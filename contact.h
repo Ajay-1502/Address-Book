@@ -22,7 +22,7 @@ typedef struct
     int contactCount;
 } AddressBook;
 
-//Function declarations
+// Function declarations
 void createContact(AddressBook *addressBook);
 void searchContact(AddressBook *addressBook);
 void editContact(AddressBook *addressBook);
