@@ -249,10 +249,60 @@ int search_by_name(AddressBook *addressBook)
     }
 }
 
-/*void editName(AddressBook *addressBook)
+void editName(AddressBook *addressBook, int editContactIndex)
 {
+    char newName[50];
 
-}*/
+    printf("Enter the new name:\n");
+    scanf(" %[^\n]", newName);
+
+    for (int i = 0; i < addressBook->contactCount; i++)
+    {
+        if (i == editContactIndex)
+        {
+
+            strcpy(addressBook->contacts[i].name, newName);
+            printf("Name updated successfully ✅ \n");
+            break;
+        }
+    }
+}
+
+void editPhone(AddressBook *addressBook, int editContactIndex)
+{
+    char newPhone[50];
+
+    printf("Enter the new phone:\n");
+    scanf(" %[^\n]", newPhone);
+
+    for (int i = 0; i < addressBook->contactCount; i++)
+    {
+        if (i == editContactIndex)
+        {
+            strcpy(addressBook->contacts[i].phone, newPhone);
+            printf("Phone number updated successfully ✅ \n");
+            break;
+        }
+    }
+}
+
+void editEmail(AddressBook *addressBook, int editContactIndex)
+{
+    char newEmail[50];
+
+    printf("Enter the new email:\n");
+    scanf(" %[^\n]", newEmail);
+
+    for (int i = 0; i < addressBook->contactCount; i++)
+    {
+        if (i == editContactIndex)
+        {
+            strcpy(addressBook->contacts[i].email, newEmail);
+            printf("Email updated successfully ✅\n");
+            break;
+        }
+    }
+}
 
 void deleteByPhone(AddressBook *addressBook)
 {
@@ -532,9 +582,35 @@ void searchContact(AddressBook *addressBook)
 
 void editContact(AddressBook *addressBook)
 {
-    /*int choice;
+    int choice;
 
-    searchContact(AddressBook * addressBook);
+    int indexOfContact;
+
+    printf("Search Contact To Be Edited :\n");
+    printf("1.Search By Name \n");
+    printf("2.Search By Phone \n");
+    printf("3.Search By Email \n");
+
+    printf("Enter your choice :\n");
+    scanf(" %d", &choice);
+
+    switch (choice)
+    {
+    case 1:
+        indexOfContact = search_by_name(addressBook);
+        break;
+
+    case 2:
+        indexOfContact = search_by_phone(addressBook);
+        break;
+
+    case 3:
+        indexOfContact = search_by_email(addressBook);
+        break;
+
+    default:
+        printf("Invalid Entry\n");
+    }
 
     do
     {
@@ -550,18 +626,18 @@ void editContact(AddressBook *addressBook)
         switch (choice)
         {
         case 1:
-            editName(AddressBook * addressBook);
+            editName(addressBook, indexOfContact);
             break;
         case 2:
-            editPhone(AddressBook * addressBook);
+            editPhone(addressBook, indexOfContact);
             break;
         case 3:
-            editEmail(AddressBook * addressBook);
+            editEmail(addressBook, indexOfContact);
             break;
         case 4:
             break;
         }
-    } while (choice != 4);*/
+    } while (choice != 4);
 }
 
 void deleteContact(AddressBook *addressBook)
