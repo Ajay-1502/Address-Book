@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "contact.h"
 
 #define RESET "\033[0m"
@@ -33,6 +34,7 @@ int main()
         printf("%s4.%s Delete Contact\n", GREEN, RESET);
         printf("%s5.%s List All Contacts\n", GREEN, RESET);
         printf("%s6.%s Save and Exit\n", GREEN, RESET);
+        printf("%s7.%s Exit\n", GREEN, RESET);
 
         printf("\n%sEnter your choice ➜ %s", BLUE, RESET);
         scanf("%d", &choice);
@@ -67,8 +69,14 @@ int main()
             break;
 
         case 6:
-            // saveContactsToFile(&addressBook);
+            saveContactsToFile(&addressBook);
             printf("%sSaving data and exiting... 👋%s\n", YELLOW, RESET);
+            break;
+
+        case 7:
+            printf("%sExiting... 👋%s\n", YELLOW, RESET);
+            printf("%sThank you for using Address Book! 😊%s\n", CYAN, RESET);
+            exit(0);
             break;
 
         default:

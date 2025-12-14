@@ -3,7 +3,6 @@
 #include <string.h>
 #include "contact.h"
 #include "file.h"
-#include "populate.h"
 
 #define RESET "\033[0m"
 #define BLACK "\033[0;30m"
@@ -393,7 +392,7 @@ void deleteByEmail(AddressBook *addressBook)
             break;
         }
     }
-    if (found = 0)
+    if (found == 0)
     {
         printf("%s❌ Contact not found%s\n", RED, RESET);
     }
@@ -517,29 +516,19 @@ void listContacts(AddressBook *addressBook)
     }
 }
 
+// Loads contacts from file to addressBook bd at the time of initialisation (./a.out)
 void initialize(AddressBook *addressBook)
 {
     addressBook->contactCount = 0;
-    populateAddressBook(addressBook);
 
-    // Load contacts from file during initialization (After files) after user enters ./a.out
-    // loadContactsFromFile(addressBook);
-    //->open file in r mode
-    // validation (NUll or not)
-    // Read Contact count (skip #)
-    // Read using fscanf() -> reads input from file
+    loadContactsFromFile(addressBook);
 }
 
+// Logic to save to .csv file and exit the program
 void saveAndExit(AddressBook *addressBook)
 {
     saveContactsToFile(addressBook); // Save contacts to file
     exit(EXIT_SUCCESS);              // Exit the program
-
-    // fopen'w' //frptintf -> prints in file
-    // save format -> # 3 (total contact count) -> first line
-    // second line start storing contacts (using loop)
-    // close the file
-    // Delete populate.c and.h not required
 }
 
 void createContact(AddressBook *addressBook)
