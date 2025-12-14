@@ -5,6 +5,16 @@
 #include "file.h"
 #include "populate.h"
 
+#define RESET "\033[0m"
+#define BLACK "\033[0;30m"
+#define RED "\033[0;31m"
+#define GREEN "\033[0;32m"
+#define YELLOW "\033[0;33m"
+#define BLUE "\033[0;34m"
+#define MAGENTA "\033[0;35m"
+#define CYAN "\033[0;36m"
+#define WHITE "\033[0;37m"
+
 // Function to validate name
 
 int validateName(char name[])
@@ -15,6 +25,7 @@ int validateName(char name[])
         // Name should not begin with '.'
         if (name[0] == '.')
         {
+            printf("%s❌ Invalid name%s\n", RED, RESET);
             return 0;
         }
 
@@ -27,6 +38,7 @@ int validateName(char name[])
         // If name has something other than above mentioned char, then its not valid name so return 0
         else
         {
+            printf("%s❌ Invalid name%s\n", RED, RESET);
             return 0;
         }
     }
@@ -42,6 +54,7 @@ int validatePhone(AddressBook *addressBook, char phoneNum[])
     // Phone num length must be 10, if not return 0
     if (numlen != 10)
     {
+        printf("%s❌ Phone number must be 10 digits%s\n", RED, RESET);
         return 0;
     }
 
@@ -55,6 +68,7 @@ int validatePhone(AddressBook *addressBook, char phoneNum[])
         // If phone number has any other character apart from digits then return 0
         else
         {
+            printf("%s❌ Phone number must contain only digits%s\n", RED, RESET);
             return 0;
         }
     }
@@ -65,7 +79,7 @@ int validatePhone(AddressBook *addressBook, char phoneNum[])
         // comapare each stored phonenum with present phonenum
         if (strcmp(addressBook->contacts[i].phone, phoneNum) == 0)
         {
-            printf("Phonenumber already exists,enter new phonenumber\n");
+            printf("%s⚠ Phone number already exists. Try again.%s\n", YELLOW, RESET);
             return 0;
         }
     }
@@ -86,13 +100,14 @@ int validateEmail(AddressBook *addressBook, char email[])
     if (!((strcmp(email + emaillen - 4, ".com") == 0) ||
           (strcmp(email + emaillen - 3, ".in") == 0)))
     {
-        printf("Invalid email id, enter valid email\n");
+        printf("%s❌ Email must end with .com or .in%s\n", RED, RESET);
         return 0;
     }
 
     // Email id shouldn't begin with digit,'@' & '.'
     if ((email[0] >= '0' && email[0] <= '9') || email[0] == '@' || email[0] == '.')
     {
+        printf("%s❌ Invalid starting character in email%s\n", RED, RESET);
         return 0;
     }
 
@@ -142,7 +157,7 @@ int validateEmail(AddressBook *addressBook, char email[])
         // comapare each stored email with present email
         if (strcmp(addressBook->contacts[i].email, email) == 0)
         {
-            printf("Email id already exists,enter new email\n");
+            printf("%s⚠ Email already exists. Try another.%s\n", YELLOW, RESET);
             return 0;
         }
     }
@@ -160,12 +175,16 @@ int search_by_phone(AddressBook *addressBook)
     {
         if (strcmp(addressBook->contacts[i].phone, phone_str) == 0)
         {
-            printf("Your required contact is :\n");
-            printf("%d. %s %s %s\n", 1, addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
+            printf("%s🔍 Contact Found:%s\n", GREEN, RESET);
+            printf("%s%s | %s | %s%s\n", WHITE,
+                   addressBook->contacts[i].name,
+                   addressBook->contacts[i].phone,
+                   addressBook->contacts[i].email,
+                   RESET);
             return i;
         }
     }
-    printf("No contact is found with given phone number \n");
+    printf("%s❌ Contact not found%s\n", RED, RESET);
 }
 
 int search_by_email(AddressBook *addressBook)
@@ -178,12 +197,16 @@ int search_by_email(AddressBook *addressBook)
     {
         if (strcmp(addressBook->contacts[i].email, email_str) == 0)
         {
-            printf("Your required contact is :\n");
-            printf("%d. %s %s %s\n", 1, addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
+            printf("%s🔍 Contact Found:%s\n", GREEN, RESET);
+            printf("%s%s | %s | %s%s\n", WHITE,
+                   addressBook->contacts[i].name,
+                   addressBook->contacts[i].phone,
+                   addressBook->contacts[i].email,
+                   RESET);
             return i;
         }
     }
-    printf("No contact is found with given email id \n");
+    printf("%s❌ Contact not found%s\n", RED, RESET);
 }
 
 int search_by_name(AddressBook *addressBook)
@@ -202,9 +225,13 @@ int search_by_name(AddressBook *addressBook)
             sameNameContact++; // Counting  the same name contacts to handle the edge cases properly
             if (sameNameContact == 1)
             {
-                printf("Your required contact(s) is/are :\n");
+                printf("%s🔍 Matching Contact(s):%s\n", GREEN, RESET);
             }
-            printf("%s %s %s\n", addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
+            printf("%s%s | %s | %s%s\n", WHITE,
+                   addressBook->contacts[i].name,
+                   addressBook->contacts[i].phone,
+                   addressBook->contacts[i].email,
+                   RESET);
         }
     }
 
@@ -221,16 +248,20 @@ int search_by_name(AddressBook *addressBook)
 
     else if (sameNameContact == 0)
     {
-        printf("Contact not found ❌\n");
+        printf("%s❌ Contact not found%s\n", RED, RESET);
     }
 
     else
     {
         int choice;
 
-        printf("Since there are multiple contacts with same name :\n");
-        printf("So, Search By :\n 1.Phone number \n 2.Email\n");
-        printf("Enter your choice :\n");
+        printf("%s⚠ Multiple contacts found with the same name%s\n", YELLOW, RESET);
+        printf("%sChoose how you want to proceed:%s\n", CYAN, RESET);
+
+        printf("%s  1.%s Search by Phone Number\n", GREEN, RESET);
+        printf("%s  2.%s Search by Email\n", GREEN, RESET);
+
+        printf("%sEnter your choice ➜ %s", MAGENTA, RESET);
         scanf("%d", &choice);
 
         switch (choice)
@@ -244,7 +275,7 @@ int search_by_name(AddressBook *addressBook)
             break;
 
         default:
-            printf("Invalid Option\n");
+            printf("%s❌ Invalid choice! Please try again.%s\n", RED, RESET);
         }
     }
 }
@@ -262,7 +293,7 @@ void editName(AddressBook *addressBook, int editContactIndex)
         {
 
             strcpy(addressBook->contacts[i].name, newName);
-            printf("Name updated successfully ✅ \n");
+            printf("%s✅ Name updated successfully%s\n", GREEN, RESET);
             break;
         }
     }
@@ -280,7 +311,7 @@ void editPhone(AddressBook *addressBook, int editContactIndex)
         if (i == editContactIndex)
         {
             strcpy(addressBook->contacts[i].phone, newPhone);
-            printf("Phone number updated successfully ✅ \n");
+            printf("%s✅ Phone updated successfully%s\n", GREEN, RESET);
             break;
         }
     }
@@ -298,7 +329,8 @@ void editEmail(AddressBook *addressBook, int editContactIndex)
         if (i == editContactIndex)
         {
             strcpy(addressBook->contacts[i].email, newEmail);
-            printf("Email updated successfully ✅\n");
+            printf("%s✅ Email updated successfully%s\n", GREEN, RESET);
+            ;
             break;
         }
     }
@@ -317,21 +349,22 @@ void deleteByPhone(AddressBook *addressBook)
     {
         if (strcmp(addressBook->contacts[i].phone, phoneNum) == 0)
         {
+            found = 1;
             int j = i;
             for (j = i; j < addressBook->contactCount - 1; j++)
             {
-                found = 1;
+
                 addressBook->contacts[j] = addressBook->contacts[j + 1];
             }
             // Decrement the total contactcount so that last element is not considered next time
             addressBook->contactCount--;
-            printf("Contact deleted successfully ✅\n");
+            printf("%s✅ Contact deleted successfully%s\n", GREEN, RESET);
             break;
         }
     }
     if (found == 0)
     {
-        printf("Contact not found ❌\n");
+        printf("%s❌ Contact not found%s\n", RED, RESET);
     }
 }
 
@@ -348,21 +381,21 @@ void deleteByEmail(AddressBook *addressBook)
     {
         if (strcmp(addressBook->contacts[i].email, email) == 0)
         {
+            found = 1;
             int j = i;
             for (j = i; j < addressBook->contactCount - 1; j++)
             {
-                found = 1;
                 addressBook->contacts[j] = addressBook->contacts[j + 1];
             }
             // Decrement the total contactcount so that last element is not considered next time
             addressBook->contactCount--;
-            printf("Contact deleted successfully ✅\n");
+            printf("%s✅ Contact deleted successfully%s\n", GREEN, RESET);
             break;
         }
     }
     if (found = 0)
     {
-        printf("Contact not found ❌\n");
+        printf("%s❌ Contact not found%s\n", RED, RESET);
     }
 }
 
@@ -387,7 +420,7 @@ void deleteByName(AddressBook *addressBook)
 
     if (sameNameContact == 0)
     {
-        printf("Contact not found ❌\n");
+        printf("%s❌ Contact not found%s\n", RED, RESET);
     }
 
     else if (sameNameContact == 1)
@@ -403,7 +436,7 @@ void deleteByName(AddressBook *addressBook)
                 }
                 // Decrement the total contactcount so that last element is not considered next time
                 addressBook->contactCount--;
-                printf("Contact deleted successfully ✅\n");
+                printf("%s✅ Contact deleted successfully%s\n", GREEN, RESET);
                 break;
             }
         }
@@ -413,7 +446,7 @@ void deleteByName(AddressBook *addressBook)
     {
         int choice;
 
-        printf("There are multiple contacts found with the same name\n");
+        printf("%s⚠ Multiple contacts found with the same name%s\n", YELLOW, RESET);
 
         for (int i = 0; i < addressBook->contactCount; i++)
         {
@@ -425,8 +458,11 @@ void deleteByName(AddressBook *addressBook)
             }
         }
 
-        printf("So, Delete By :\n 1.Phone number \n 2.Email\n");
-        printf("Enter your choice :\n");
+        printf("%sChoose how you want to proceed:%s\n", CYAN, RESET);
+        printf("%s  1.%s Delete by Phone Number\n", GREEN, RESET);
+        printf("%s  2.%s Delete by Email\n", GREEN, RESET);
+
+        printf("%sEnter your choice ➜ %s", MAGENTA, RESET);
         scanf("%d", &choice);
 
         switch (choice)
@@ -440,7 +476,7 @@ void deleteByName(AddressBook *addressBook)
             break;
 
         default:
-            printf("Invalid Option\n");
+            printf("%s❌ Invalid choice! Please try again.%s\n", RED, RESET);
         }
     }
 }
@@ -449,8 +485,6 @@ void deleteByName(AddressBook *addressBook)
 
 void listContacts(AddressBook *addressBook)
 {
-
-    printf("All the contacts in the addressbook are :\n");
 
     // Sort contacts based on the chosen criteria A-Z using bubble sort
     for (int i = 0; i < addressBook->contactCount - 1; i++)
@@ -469,9 +503,17 @@ void listContacts(AddressBook *addressBook)
         }
     }
 
+    printf("All the contacts in the addressbook are :\n");
+    printf("\n%s===============================================%s\n", CYAN, RESET);
+    printf("%s%-20s %-15s %-25s%s\n", YELLOW, "NAME", "PHONE", "EMAIL", RESET);
+    printf("%s===============================================%s\n", CYAN, RESET);
+
     for (int i = 0; i < addressBook->contactCount; i++)
     {
-        printf("%s %s %s\n", addressBook->contacts[i].name, addressBook->contacts[i].phone, addressBook->contacts[i].email);
+        printf("%-20s %-15s %-25s\n",
+               addressBook->contacts[i].name,
+               addressBook->contacts[i].phone,
+               addressBook->contacts[i].email);
     }
 }
 
@@ -537,7 +579,8 @@ void createContact(AddressBook *addressBook)
     strcpy(addressBook->contacts[addressBook->contactCount].phone, phone_str);
     strcpy(addressBook->contacts[addressBook->contactCount].email, email_str);
 
-    printf("Contact created successfully 🎉");
+    printf("%s🎉 Contact created successfully!%s\n", GREEN, RESET);
+
     // Incrementing contactCount in addressbook to track number of contacts added
     addressBook->contactCount++;
 }
@@ -549,10 +592,11 @@ void searchContact(AddressBook *addressBook)
 
     do
     {
-        printf("1.Search By Name \n");
-        printf("2.Search By Phone \n");
-        printf("3.Search By Email \n");
-        printf("4.Exit \n");
+        printf("\n%s------ SEARCH MENU ------%s\n", MAGENTA, RESET); // ⭐
+        printf("%s1.%s Search by Name\n", GREEN, RESET);
+        printf("%s2.%s Search by Phone\n", GREEN, RESET);
+        printf("%s3.%s Search by Email\n", GREEN, RESET);
+        printf("%s4.%s Exit\n", GREEN, RESET);
 
         printf("Enter your choice :\n");
         scanf(" %d", &choice);
@@ -575,7 +619,7 @@ void searchContact(AddressBook *addressBook)
             break;
 
         default:
-            printf("Invalid Entry\n");
+            printf("%s❌ Invalid choice! Please try again.%s\n", RED, RESET);
         }
     } while (choice != 4);
 }
@@ -586,10 +630,10 @@ void editContact(AddressBook *addressBook)
 
     int indexOfContact;
 
-    printf("Search Contact To Be Edited :\n");
-    printf("1.Search By Name \n");
-    printf("2.Search By Phone \n");
-    printf("3.Search By Email \n");
+    printf("\n%s------ SEARCH CONTACT TO BE EDITED ------%s\n", MAGENTA, RESET); // ⭐
+    printf("%s1.%s Search by Name\n", GREEN, RESET);
+    printf("%s2.%s Search by Phone\n", GREEN, RESET);
+    printf("%s3.%s Search by Email\n", GREEN, RESET);
 
     printf("Enter your choice :\n");
     scanf(" %d", &choice);
@@ -609,7 +653,7 @@ void editContact(AddressBook *addressBook)
         break;
 
     default:
-        printf("Invalid Entry\n");
+        printf("%s❌ Invalid choice! Please try again.%s\n", RED, RESET);
     }
 
     do
@@ -663,6 +707,6 @@ void deleteContact(AddressBook *addressBook)
         break;
 
     default:
-        printf("Invalid option:\n");
+        printf("%s❌ Invalid choice! Please try again.%s\n", RED, RESET);
     }
 }
